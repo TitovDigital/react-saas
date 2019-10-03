@@ -26,7 +26,7 @@ functionality should not depend on React or parts of this framework.
 
 * High-level Application Architecture
 * Authentication
-* CRUD data editing
+* CRUD data editing with back-end validation errors per field
 
 ## High-level Architecture
 
