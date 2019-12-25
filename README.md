@@ -27,6 +27,7 @@ functionality should not depend on React or parts of this framework.
 * High-level Application Architecture
 * Authentication
 * CRUD data editing with back-end validation errors per field
+* Notification alerts (flash messages)
 
 ## High-level Architecture
 
@@ -113,10 +114,57 @@ support different components for display, edit and creation.
 AppEdit, linking forms and data providers should be generic, whereas forms
 tend to have different implementations that are application specific.
 
+### Simple Forms
+
+Trivial forms for editing an simple record with fields that can be represented as HTML5 input values
+can be implemented using [uncontrolled components](https://reactjs.org/docs/uncontrolled-components.html)
+along with [`resourcePage`](samples/resourcePage.js) responsible for serialisation and
+deserialisation of form fields.
+
+This approach results in code significantly slimmer than controlled components but
+can only be used when all field values can be stored as DOM input values.
+
+Example:
+```javascript
+import { useResource, persistForm } from '../react-saas/resourcePage'
+...
+  const formId = 'enabledNotificationForm'
+  let resourceName = 'api/properties/' + match.params.propertyId + '/enabled_notifications'
+  useResource(formId, props.dataProvider, resourceName, { id: match.params.id })
+  ...
+  function handleSubmit(e) {
+    e.preventDefault()
+    persistForm(e.target, props.dataProvider, resourceName).then(() => {
+      alert('added successfully')
+    }).catch(err => {
+      console.log(err) // TODO: create app-common exception handling
+    })
+  }
+
+  return (
+    <>
+      <form id={formId} onSubmit={handleSubmit}>
+        <input type="hidden" name="id" />
+        Name: <input name="name" />
+        <input type="submit" value="Save" className="btn btn-primary" />
+      </form>
+    </>
+  )
+```
+
 ## Styling of Components
 
 *TODO:* Global stylesheets vs styled components? Where each of the styles go?
 
+## Notifications
+
+Use https://github.com/teodosii/react-notifications-component
+or create a similar API.
+
+See https://alligator.io/react/react-notifications-component/
+for customisation example.
+
 ## Implementation Conventions
 
 * Store state in localStorage or sessionStorage rather than cookies
+* Use single quotes instead of double: https://bytearcher.com/articles/single-or-double-quotes-strings-javascript/
