@@ -80,7 +80,7 @@ This reference application uses a [`simpleRestProvider`](samples/simpleRestProvi
 is based on `ra-data-simple-rest` [React Admin Data Provider](https://marmelab.com/react-admin/DataProviders.html),
 however the interface has been modified to remove data provider function dependency on react-admin.
 
-[`httpClient`](samples/httpClient.js) is responsible for passing active credentials in
+[`httpClient`](data/httpClient.js) is responsible for passing active credentials in
 HTTP requests, deserialising responses and converting bad responses to application-friendly errors.
 
 It is injected into a data provider, which is then passed to child components that have
@@ -97,9 +97,11 @@ As this application doesn't use Flux, authentication errors should be handled by
 and either result in user-friendly error message (such as when attempting to retrieve object to which
 current user doesn't have access to) or redirecting to the Login page if session expires.
 
-*TODO:* implement cleaner reference `httpClient` and
-use standard way to encode errors in HTTP responses,
-as well as a custom `Error` object for raising errors in JS.
+A back-end API often has additional logic for handling requests and a predefined format for error
+messages. An example of this is [`railsHttpClient`](data/railsHttpClient.js), which is extended
+version of `httpClient` that automatically includes CSRF token available in Ruby on Rails views
+in requests, as well as uses a few predefined fields for errors that follow Ruby on Rails errors'
+and validations' structure.
 
 *TODO:* Implement dismissable flash notifications stored in sessionStorage?
 

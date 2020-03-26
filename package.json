@@ -1,0 +1,24 @@
+{
+  "name": "react-saas",
+  "version": "1.0.0",
+  "description": "React.JS SaaS Architecture Kit",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TitovDigital/react-saas.git"
+  },
+  "keywords": [
+    "saas",
+    "react",
+    "architecture"
+  ],
+  "author": "Pavel Titov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TitovDigital/react-saas/issues"
+  },
+  "homepage": "https://github.com/TitovDigital/react-saas#readme"
+}
