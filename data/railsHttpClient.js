@@ -1,4 +1,4 @@
-const httpClient = (url, options = {}) => {
+module.exports = (url, options = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: 'application/json' });
   }
@@ -11,7 +11,7 @@ const httpClient = (url, options = {}) => {
       if (response.status === 201 || response.status === 204) {
         return { headers: response.headers, json: {} }
       } else if (isJson) {
-        return response.json().then(json => { return {headers: response.headers, json: json } })
+        return response.json().then(json => { return { headers: response.headers, json: json } })
       } else {
         console.log('Unexpected response status and content-type combination: ' + response.status + ' / ' + contentType)
       }
@@ -34,5 +34,3 @@ const httpClient = (url, options = {}) => {
     }
   })
 }
-
-export default httpClient

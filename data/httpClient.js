@@ -1,4 +1,4 @@
-const httpClient = (url, options = {}) => {
+module.exports = (url, options = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: 'application/json' });
   }
@@ -11,9 +11,9 @@ const httpClient = (url, options = {}) => {
       if (response.status === 201) {
         return { headers: response.headers, json: {} }
       } else if (contentType && contentType.indexOf('application/json') !== -1) {
-        return response.json().then(json => { return {headers: response.headers, json: json } })
+        return response.json().then(json => { return { headers: response.headers, json: json } })
       } else {
-        return response.text().then(text => { return {headers: response.headers, json: { message: text } } })
+        return response.text().then(text => { return { headers: response.headers, json: { message: text } } })
       }
     } else {
       return response.text().then(text => {
