@@ -1,6 +1,6 @@
 {
   "name": "react-saas",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "React.JS SaaS Architecture Kit",
   "main": "index.js",
   "scripts": {

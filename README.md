@@ -120,7 +120,7 @@ tend to have different implementations that are application specific.
 
 Trivial forms for editing an simple record with fields that can be represented as HTML5 input values
 can be implemented using [uncontrolled components](https://reactjs.org/docs/uncontrolled-components.html)
-along with [`resourcePage`](samples/resourcePage.js) responsible for serialisation and
+along with [`resourcePage`](data/resourcePage.js) responsible for serialisation and
 deserialisation of form fields.
 
 This approach results in code significantly slimmer than controlled components but
@@ -128,7 +128,7 @@ can only be used when all field values can be stored as DOM input values.
 
 Example:
 ```javascript
-import { useResource, persistForm } from '../react-saas/resourcePage'
+import { useResource, persistForm } from 'react-saas/resourcePage'
 ...
   const formId = 'enabledNotificationForm'
   let resourceName = 'api/properties/' + match.params.propertyId + '/enabled_notifications'

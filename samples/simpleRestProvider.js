@@ -164,7 +164,7 @@ export default (apiUrl, httpClient) => {
             params
         );
         if (options.body)
-            options.headers = new Headers({ 'content-type': 'application/json' })
+            options.headers = new Headers({ 'content-type': 'application/json', 'accept': 'application/json' })
         return httpClient(url, options).then(response =>
             convertHTTPResponse(response, type, resource, params)
         );
