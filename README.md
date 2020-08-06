@@ -80,6 +80,14 @@ This reference application uses a [`simpleRestProvider`](samples/simpleRestProvi
 is based on `ra-data-simple-rest` [React Admin Data Provider](https://marmelab.com/react-admin/DataProviders.html),
 however the interface has been modified to remove data provider function dependency on react-admin.
 
+> In most cases with REST APIs `httpClient` should be used directly without a data provider level,
+> unless application requirements include being able to switch between various APIs. For non-REST
+> API a vendor JS SDK library is preferred to the custom implementation.
+>
+> Alternatively, a client application
+> may implement models using ActiveRecord pattern to provide an API-agnostic layer for data access.
+> This is most useful when a single model may have data coming from several back-end services.
+
 [`httpClient`](data/httpClient.js) is responsible for passing active credentials in
 HTTP requests, deserialising responses and converting bad responses to application-friendly errors.
 
