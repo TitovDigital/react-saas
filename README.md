@@ -11,10 +11,10 @@ applications.
 
 1. Separation of component view and data without using heavyweight
 Flux/Redux approach.
-2. Use of standard APIs such as REST CRUD and JWT Bearer instead of
+2. Use of standard APIs such as JSON CRUD and JWT Bearer instead of
 vendor-specific whenever possible.
-3. Convention over dependency. Shared code that contains component
-functionality should not depend on React or parts of this framework.
+3. Convention over dependency. Reliance on documented conventions
+to reduce code dependencies whenever possible.
 
 ## Scope
 
@@ -34,45 +34,30 @@ See [reference example app.js](samples/app.js).
 Routing functionality can be implemented with [React Router](https://reacttraining.com/react-router/web/guides/quick-start),
 which parses the URL and launches respective components.
 
-Singleton pattern is the preferred method of keeping global state.
+### Data and State
+
+Global state that needs to be shared between components should be maintained
+using standard practices:
+* when the data fetched from a server need to be accessible in several components,
+  [SWR](https://swr.vercel.app/) can be used to do so
+* in more general cases, [React Context](https://react.dev/learn/passing-data-deeply-with-context) can be suitable
+
+Sometimes, [singleton pattern](https://en.wikipedia.org/wiki/Singleton_pattern) is an acceptable method of keeping global state.
 Blueprint.js [Toaster component](https://blueprintjs.com/docs/#core/components/toast)
 is an example of how it works.
 
-Another acceptable alternative of keeping global state is to rely on the
-main component and inject it into children. This practice should be used
-cautiously as it makes component calls unnecessarily verbose.
+### Back-End Abstraction
 
-```js
-const [authenticated, setAuthenticated] = useState(null)
+In many cases, it's practical to create an abstraction around a simple fetch,
+transforming CRUD data requests from JS components into HTTP requests to the back-end.
 
-if (authenticated === null)
-  authProvider('AUTH_CHECK').then(() => {
-    setAuthenticated(true)
-  }).catch(() => {
-    setAuthenticated(false)
-  })
+Conceptually, it can be split into two layers:
+1. a Fetcher, that works with requests specified in [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)-like
+  way, abstracting underlying HTTP communications and authentication,
+  but still requiring to provide URI, request parameters etc
+2. optionally, Data Provider that implements even a higher-level way of accessing data
 
-return (<Login {...props} authProvider={authProvider} setAuthenticated={setAuthenticated} />)
-```
-
-[`authProvider`](samples/authProvider.js) is dependent on the back-end authentication API and
-the goal is to implement reusable authProviders for each of the back-end authentication interfaces.
-
-It is implemented according to the [react-admin Authentication interface](https://marmelab.com/react-admin/Authentication.html) auth flow, however the JS interface is using strings
-instead of constants to define call type to remove dependency on a third-party module.
-
-> *This is a perfect example of all three principles.* authProvider code implements
-> authentication with the back-end and session keeping in a function that doesn't define the UI
-> and doesn't have hard _dependencies_ or expectations for the Component that will include it.
-> This function implements _standard JWT Bearer interface_ when communicating with the back-end
-> and also standardises its JS interface by a well documented _convention_.
-> It also follows the _Implementation Conventions_ that listed in the bottom of this document
-> to store current credentials within the session.
-
-The top-level component is also responsible for transforming CRUD data requests from JS
-components into HTTP requests to the back-end.
-
-This reference application uses a [`simpleRestProvider`](samples/simpleRestProvider.js), which
+The reference application uses a [`simpleRestProvider`](samples/simpleRestProvider.js), which
 is based on `ra-data-simple-rest` [React Admin Data Provider](https://marmelab.com/react-admin/DataProviders.html),
 however the interface has been modified to remove data provider function dependency on react-admin.
 
@@ -84,6 +69,7 @@ however the interface has been modified to remove data provider function depende
 > may implement models using ActiveRecord pattern to provide an API-agnostic layer for data access.
 > This is most useful when a single model may have data coming from several back-end services.
 
+In the reference application,
 [`httpClient`](data/httpClient.js) is responsible for passing active credentials in
 HTTP requests, deserialising responses and converting bad responses to application-friendly errors.
 
@@ -212,6 +198,16 @@ prevent repetition of form group - label - input tags.
 
 *TODO:* Global stylesheets vs styled components? Where each of the styles go?
 
+## UI/UX Considerations
+
+To reduce visual flicker during loading of data used by individual page components, consider:
+* for components that have known dimensions and wouldn't affect flow,
+  hiding the intermediary states with `visibility: hidden` until all data needed for rendering
+  are present
+* for components that have unknown dimensions, or components that can be grouped logically,
+  postpone rendering of the component _and_ components located further on the page until
+  it can be rendered in its final state
+
 ## Notifications
 
 https://blueprintjs.com/docs/#core/components/toast is an excellent
@@ -227,5 +223,7 @@ for customisation example.
 
 ## Implementation Conventions
 
+* Locate 'controller' code that doesn't depend on React outside of functional components,
+  but possibly in the same file
 * Store state in localStorage or sessionStorage rather than cookies
 * Use single quotes instead of double: https://bytearcher.com/articles/single-or-double-quotes-strings-javascript/
